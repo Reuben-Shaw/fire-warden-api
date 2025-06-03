@@ -16,8 +16,11 @@ module.exports = async function (context, req) {
 
     if (!staff_number) {
         context.res = {
-        status: 400,
-        body: "Missing staff number"
+            status: 400,
+            body: {
+                success: false,
+                message: 'Missing staff number'
+            }
         };
         return;
     }
@@ -30,21 +33,31 @@ module.exports = async function (context, req) {
         `;
 
         if (result.recordset.length === 0) {
-        context.res = {
-            status: 404,
-            body: "Warden not found"
-        };
+            context.res = {
+                status: 404,
+                body: {
+                    success: false,
+                    message: 'Warden not found'
+                }
+            };
         } else {
-        context.res = {
-            status: 200,
-            body: result.recordset[0]
-        };
+            context.res = {
+                status: 200,
+                body: {
+                    success: true,
+                    message: 'Warden fetched successfully',
+                    data: result.recordset[0]
+                }
+            };
         }
     } catch (err) {
-        console.error("Error retrieving warden:", err);
+        console.error('Error retrieving warden:', err);
         context.res = {
-        status: 500,
-        body: "Error retrieving warden"
+            status: 500,
+            body: {
+                success: false,
+                message: 'Error retrieving warden'
+            }
         };
     }
 };

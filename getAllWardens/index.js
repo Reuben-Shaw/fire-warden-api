@@ -19,13 +19,20 @@ module.exports = async function (context, req) {
 
         context.res = {
             status: 200,
-            body: result.recordset
+            body: {
+                success: true,
+                message: 'Wardens fetched successfully',
+                data: result.recordset
+            }
         };
-        } catch (err) {
-            console.error("Error retrieving wardens:", err);
-            context.res = {
-                status: 500,
-                body: "Error retrieving wardens"
+    } catch (err) {
+        console.error('Error retrieving wardens:', err);
+        context.res = {
+            status: 500,
+            body: {
+                success: false,
+                message: 'Error retrieving wardens'
+            }
         };
     }
 };

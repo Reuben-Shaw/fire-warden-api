@@ -15,10 +15,15 @@ module.exports = async function (context, req) {
     const { staff_number, first_name, last_name } = req.body || {};
 
     if (!staff_number || !first_name || !last_name) {
+        
         context.res = {
             status: 400,
-            body: "Missing required fields"
+            body: {
+                success: false,
+                message: 'Missing required values',
+            }
         };
+        
         return;
     }
 
@@ -32,13 +37,20 @@ module.exports = async function (context, req) {
 
         context.res = {
             status: 200,
-            body: "Successfully added a warden"
+            body: {
+                success: true,
+                message: 'Successfully added a warden',
+            }
         };
     } catch (err) {
         console.error("Error adding warden:", err);
+        
         context.res = {
             status: 500,
-            body: "Error adding warden"
+            body: {
+                success: false,
+                message: 'Error adding warden',
+            }
         };
     }
 };
