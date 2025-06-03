@@ -15,7 +15,7 @@ module.exports = async function (context, req) {
     try {
         sql.connect(dbConfig);
 
-        const result = await sql.query`SELECT * FROM Warden`;
+        const result = await sql.query`SELECT * FROM wardens`;
 
         context.res = {
             status: 200,

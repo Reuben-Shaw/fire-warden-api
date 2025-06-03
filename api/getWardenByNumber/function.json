@@ -6,7 +6,7 @@
       "direction": "in",
       "name": "req",
       "methods": ["get"],
-      "route": "getWarden/{staffNumber}"
+      "route": "getWarden/{staff_number}"
     },
     {
       "type": "http",

@@ -12,9 +12,9 @@ const dbConfig = {
 };
 
 module.exports = async function (context, req) {
-    const staffNumber = req.params.staffNumber;
+    const staff_number = req.params.staff_number;
 
-    if (!staffNumber) {
+    if (!staff_number) {
         context.res = {
         status: 400,
         body: "Missing staff number"
@@ -26,7 +26,7 @@ module.exports = async function (context, req) {
         sql.connect(dbConfig);
 
         const result = await sql.query`
-        SELECT * FROM Warden WHERE StaffNumber = ${staffNumber}
+        SELECT * FROM wardens WHERE staff_number = ${staff_number}
         `;
 
         if (result.recordset.length === 0) {
