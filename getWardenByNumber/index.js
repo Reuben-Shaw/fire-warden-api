@@ -13,6 +13,7 @@ const dbConfig = {
 
 module.exports = async function (context, req) {
     const staff_number = req.params.staff_number;
+    context.log('Request body:', req.body);
 
     if (!staff_number) {
         context.res = {
@@ -26,7 +27,7 @@ module.exports = async function (context, req) {
     }
 
     try {
-        sql.connect(dbConfig);
+        await sql.connect(dbConfig);
 
         const result = await sql.query`
         SELECT * FROM wardens WHERE staff_number = ${staff_number}
@@ -51,7 +52,7 @@ module.exports = async function (context, req) {
             };
         }
     } catch (err) {
-        console.error('Error retrieving warden:', err);
+        context.error('Error retrieving warden:', err);
         context.res = {
             status: 500,
             body: {

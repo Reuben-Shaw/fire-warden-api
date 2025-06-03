@@ -27,7 +27,7 @@ module.exports = async function (context, req) {
     }
 
     try {
-        sql.connect(dbConfig);
+        await sql.connect(dbConfig);
 
         const result = await sql.query`
             SELECT * FROM wardens WHERE staff_number = ${staff_number} AND last_name = ${last_name}

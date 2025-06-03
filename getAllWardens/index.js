@@ -13,7 +13,7 @@ const dbConfig = {
 
 module.exports = async function (context, req) {
     try {
-        sql.connect(dbConfig);
+        await sql.connect(dbConfig);
 
         const result = await sql.query`SELECT * FROM wardens`;
 
@@ -26,7 +26,7 @@ module.exports = async function (context, req) {
             }
         };
     } catch (err) {
-        console.error('Error retrieving wardens:', err);
+        context.error('Error retrieving wardens:', err);
         context.res = {
             status: 500,
             body: {

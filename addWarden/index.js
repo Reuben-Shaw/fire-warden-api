@@ -27,7 +27,7 @@ module.exports = async function (context, req) {
     }
 
     try {
-        sql.connect(dbConfig);
+        await sql.connect(dbConfig);
 
         await sql.query`
             INSERT INTO wardens (staff_number, first_name, last_name)
@@ -42,8 +42,7 @@ module.exports = async function (context, req) {
             }
         };
     } catch (err) {
-        console.error('Error adding warden:', err);
-        
+        context.error('Error adding warden:', err); 
         context.res = {
             status: 500,
             body: {
