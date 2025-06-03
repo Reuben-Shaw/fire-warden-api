@@ -15,7 +15,6 @@ module.exports = async function (context, req) {
     const { staff_number, first_name, last_name } = req.body || {};
 
     if (!staff_number || !first_name || !last_name) {
-        
         context.res = {
             status: 400,
             body: {

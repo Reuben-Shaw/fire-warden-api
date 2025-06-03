@@ -12,7 +12,8 @@ const dbConfig = {
 };
 
 module.exports = async function (context, req) {
-    const { staff_number, last_name } = req.body;
+    const { staff_number, last_name } = req.body || {};
+    console.log('Request body:', req.body);
 
     if (!staff_number || !last_name) {
         context.res = {
