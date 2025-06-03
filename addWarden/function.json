@@ -5,8 +5,7 @@
       "type": "httpTrigger",
       "direction": "in",
       "name": "req",
-      "methods": ["get"],
-      "route": "getWarden/{staff_number}"
+      "methods": ["post"]
     },
     {
       "type": "http",

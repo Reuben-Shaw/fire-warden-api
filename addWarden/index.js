@@ -43,7 +43,7 @@ module.exports = async function (context, req) {
             }
         };
     } catch (err) {
-        console.error("Error adding warden:", err);
+        console.error('Error adding warden:', err);
         
         context.res = {
             status: 500,
