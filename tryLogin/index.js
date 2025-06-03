@@ -13,7 +13,7 @@ const dbConfig = {
 
 module.exports = async function (context, req) {
     const { staff_number, last_name } = req.body || {};
-    console.log('Request body:', req.body);
+    context.log('Request body:', req.body);
 
     if (!staff_number || !last_name) {
         context.res = {
@@ -29,7 +29,9 @@ module.exports = async function (context, req) {
     try {
         sql.connect(dbConfig);
 
-        const result = await sql.query`SELECT * FROM wardens WHERE staff_number = ${staff_number} AND last_name = ${last_name}`;
+        const result = await sql.query`
+            SELECT * FROM wardens WHERE staff_number = ${staff_number} AND last_name = ${last_name}
+        `;
 
         if (result.recordset.length === 0) {
             context.res = {
@@ -51,12 +53,12 @@ module.exports = async function (context, req) {
             }
         };
     } catch (err) {
-        console.error('Error retrieving wardens:', err);
+        context.error('Error logging in:', err);
         context.res = {
             status: 500,
             body: {
                 success: false,
-                message: 'Error retrieving wardens'
+                message: 'Error logging in'
             }
         };
     }
