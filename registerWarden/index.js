@@ -29,7 +29,7 @@ module.exports = async function (context, req) {
         await sql.connect(dbConfig);
 
         const wardenExists = await sql.query`
-            SELECT * FROM wardens WHERE warden_id = ${staff_number}
+            SELECT * FROM wardens WHERE staff_number = ${staff_number}
         `;
 
         if (wardenExists.length === 0) {
