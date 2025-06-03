@@ -12,15 +12,15 @@ const dbConfig = {
 };
 
 module.exports = async function (context, req) {
-    const { staff_number, last_name } = req.body || {};
+    const { staff_number, password } = req.body || {};
     context.log('Request body:', req.body);
 
-    if (!staff_number || !last_name) {
+    if (!staff_number || !password) {
         context.res = {
             status: 400,
             body: {
                 success: false,
-                message: 'Staff number and last name are required'
+                message: 'Staff number and password are required'
             }
         };
         return;
@@ -29,16 +29,34 @@ module.exports = async function (context, req) {
     try {
         await sql.connect(dbConfig);
 
-        const result = await sql.query`
-            SELECT * FROM wardens WHERE staff_number = ${staff_number} AND last_name = ${last_name}
+        const resultWarden = await sql.query`
+            SELECT * FROM users WHERE warden_id = ${staff_number} AND password = ${password}
         `;
 
-        if (result.recordset.length === 0) {
+        if (resultWarden.recordset.length !== 0) {
+            context.res = {
+                status: 200,
+                body: {
+                    success: true,
+                    isWarden: true,
+                    message: 'Logged in successfully',
+                    data: resultWarden.recordset[0]
+                }
+            };
+            return; 
+        }
+
+        const resultHealth = await sql.query`
+            SELECT * FROM users WHERE health_id = ${staff_number} AND password = ${password}
+        `;
+
+        if (resultHealth.recordset.length === 0) {
             context.res = {
                 status: 401,
                 body: {
                     success: false,
-                    message: 'Invalid staff number or last name'
+                    message: 'Invalid staff number or password',
+                    data: resultHealth.recordset[0]
                 }
             };
             return;
@@ -48,8 +66,9 @@ module.exports = async function (context, req) {
             status: 200,
             body: {
                 success: true,
+                isWarden: false,
                 message: 'Logged in successfully',
-                data: result.recordset[0]
+                data: resultHealth.recordset[0]
             }
         };
     } catch (err) {
