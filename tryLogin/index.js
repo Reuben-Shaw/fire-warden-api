@@ -1,3 +1,4 @@
+require('dotenv').config();
 const sql = require("mssql");
 
 const dbConfig = {
@@ -16,6 +17,7 @@ module.exports = async function (context, req) {
     context.log('Request body:', req.body);
 
     if (!staff_number || !password) {
+        context.log('Missing data');
         context.res = {
             status: 400,
             body: {
@@ -33,7 +35,10 @@ module.exports = async function (context, req) {
             SELECT * FROM users WHERE warden_id = ${staff_number} AND password = ${password}
         `;
 
+        context.log('Query has run');
+
         if (resultWarden.recordset.length !== 0) {
+            context.log('Returning warden');
             context.res = {
                 status: 200,
                 body: {
@@ -49,8 +54,10 @@ module.exports = async function (context, req) {
         const resultHealth = await sql.query`
             SELECT * FROM users WHERE health_id = ${staff_number} AND password = ${password}
         `;
+        context.log('Second query run');
 
         if (resultHealth.recordset.length === 0) {
+            context.log('Returning nothing');
             context.res = {
                 status: 401,
                 body: {
@@ -61,7 +68,8 @@ module.exports = async function (context, req) {
             };
             return;
         }
-
+        
+        context.log('Returning health and safety');
         context.res = {
             status: 200,
             body: {

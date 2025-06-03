@@ -1,3 +1,4 @@
+require('dotenv').config();
 const sql = require("mssql");
 
 const dbConfig = {
@@ -12,7 +13,9 @@ const dbConfig = {
 };
 
 module.exports = async function (context, req) {
+    context.log('HERE!!!!');
     const staff_number = req.params.staff_number;
+    context.log('Request params:', req.params);
 
     if (!staff_number) {
         context.res = {
@@ -31,7 +34,7 @@ module.exports = async function (context, req) {
         const result = await sql.query`
             SELECT 
                 e.id,
-                b.name AS building_name,
+                b.building_name,
                 e.entry_datetime,
                 e.exit_datetime
             FROM entries e

@@ -13,9 +13,10 @@ const dbConfig = {
 };
 
 module.exports = async function (context, req) {
-    const { staff_number, first_name, last_name } = req.body || {};
+    const { entry_id, time_now } = req.body || {};
+    context.log('Request body:', req.body);
 
-    if (!staff_number || !first_name || !last_name) {
+    if (!entry_id || !time_now) {
         context.res = {
             status: 400,
             body: {
@@ -23,7 +24,6 @@ module.exports = async function (context, req) {
                 message: 'Missing required values',
             }
         };
-        
         return;
     }
 
@@ -31,24 +31,23 @@ module.exports = async function (context, req) {
         await sql.connect(dbConfig);
 
         await sql.query`
-            INSERT INTO wardens (staff_number, first_name, last_name)
-            VALUES (${staff_number}, ${first_name}, ${last_name})
+            UPDATE entries SET exit_datetime = ${time_now} WHERE id = ${entry_id}
         `;
 
         context.res = {
             status: 200,
             body: {
                 success: true,
-                message: 'Successfully added a warden',
+                message: 'Successfully updated entry',
             }
         };
     } catch (err) {
-        context.error('Error adding warden:', err); 
+        context.error('Error updating entry:', err); 
         context.res = {
             status: 500,
             body: {
                 success: false,
-                message: 'Error adding warden',
+                message: 'Error updating entry',
             }
         };
     }
