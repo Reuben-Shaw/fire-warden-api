@@ -13,6 +13,7 @@ const dbConfig = {
 
 module.exports = async function (context, req) {
     const { staff_number, first_name, last_name, password } = req.body || {};
+    context.log('Request body:', req.body);
 
     if (!staff_number || !first_name || !last_name || !password) {
         context.res = {
@@ -32,14 +33,15 @@ module.exports = async function (context, req) {
             SELECT * FROM wardens WHERE staff_number = ${staff_number}
         `;
 
-        if (wardenExists.length === 0) {
+        if (wardenExists.recordset.length === 0) {
             context.res = {
-            status: 401,
-            body: {
-                success: false,
-                message: 'Warden with that staff number is not in the system',
-            }
-        };
+                status: 401,
+                body: {
+                    success: false,
+                    message: 'Warden with that staff number is not in the system',
+                }
+            };
+            return;
         }
 
         await sql.query`
