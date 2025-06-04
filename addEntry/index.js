@@ -35,6 +35,10 @@ module.exports = async function (context, req) {
             INSERT INTO entries (staff_number, building_id, entry_datetime)
             VALUES (${staff_number}, ${building_id}, ${entry_datetime})
         `;
+        
+        await sql.query`
+            UPDATE wardens SET last_loc = ${building_id} WHERE staff_number = ${staff_number}
+        `;
 
         context.res = {
             status: 200,
