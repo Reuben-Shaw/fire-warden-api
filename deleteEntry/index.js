@@ -8,21 +8,20 @@ const dbConfig = {
     database: process.env.DB_NAME,
     options: {
         encrypt: true,
-        trustServerCertificate: true
+        trustServerCertificate: true 
     }
 };
 
 module.exports = async function (context, req) {
-    context.log('HERE!!!!');
-    const staff_number = req.params.staff_number;
-    context.log('Request params:', req.params);
+    const { entry_id } = req.body || {};
+    context.log('Request body:', req.body);
 
-    if (!staff_number) {
+    if (!entry_id) {
         context.res = {
             status: 400,
             body: {
                 success: false,
-                message: 'Missing staff number'
+                message: 'Missing required value: entry_id',
             }
         };
         return;
@@ -32,33 +31,34 @@ module.exports = async function (context, req) {
         await sql.connect(dbConfig);
 
         const result = await sql.query`
-            SELECT 
-                e.id,
-                e.building_id,
-                b.building_name,
-                e.entry_datetime,
-                e.exit_datetime
-            FROM entries e
-            JOIN buildings b ON e.building_id = b.id
-            WHERE e.staff_number = ${staff_number}
-            ORDER BY e.entry_datetime DESC
+            DELETE FROM entries WHERE id = ${entry_id}
         `;
+
+        if (result.rowsAffected[0] === 0) {
+            context.res = {
+                status: 404,
+                body: {
+                    success: false,
+                    message: 'No entry found with the given ID',
+                }
+            };
+            return;
+        }
 
         context.res = {
             status: 200,
             body: {
                 success: true,
-                message: 'Entries fetched successfully',
-                data: result.recordset
+                message: 'Successfully deleted the entry',
             }
         };
     } catch (err) {
-        context.log.error('Error retrieving entries:', err);
+        context.log.error('Error deleting entry:', err);
         context.res = {
             status: 500,
             body: {
                 success: false,
-                message: 'Error retrieving entries'
+                message: 'Error deleting entry',
             }
         };
     }
