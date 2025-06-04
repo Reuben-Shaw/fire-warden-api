@@ -14,10 +14,12 @@ const dbConfig = {
 
 module.exports = async function (context, req) {
     try {
+        context.log('Getting buildings');
         await sql.connect(dbConfig);
 
         const result = await sql.query`SELECT * FROM buildings`;
 
+        context.log('Returning buildings');
         context.res = {
             status: 200,
             body: {

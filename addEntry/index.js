@@ -13,10 +13,10 @@ const dbConfig = {
 };
 
 module.exports = async function (context, req) {
-    const { staff_number, first_name, last_name } = req.body || {};
+    const { staff_number, building_id, entry_datetime } = req.body || {};
     context.log('Request body:', req.body);
 
-    if (!staff_number || !first_name || !last_name) {
+    if (!staff_number || !building_id || !entry_datetime) {
         context.res = {
             status: 400,
             body: {
@@ -32,24 +32,24 @@ module.exports = async function (context, req) {
         await sql.connect(dbConfig);
 
         await sql.query`
-            INSERT INTO wardens (staff_number, first_name, last_name)
-            VALUES (${staff_number}, ${first_name}, ${last_name})
+            INSERT INTO entries (staff_number, building_id, entry_datetime)
+            VALUES (${staff_number}, ${building_id}, ${entry_datetime})
         `;
 
         context.res = {
             status: 200,
             body: {
                 success: true,
-                message: 'Successfully added a warden',
+                message: 'Successfully added an entry',
             }
         };
     } catch (err) {
-        context.error('Error adding warden:', err); 
+        context.error('Error adding entry:', err); 
         context.res = {
             status: 500,
             body: {
                 success: false,
-                message: 'Error adding warden',
+                message: 'Error adding entry',
             }
         };
     }
