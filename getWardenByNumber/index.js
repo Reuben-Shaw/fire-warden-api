@@ -58,7 +58,7 @@ module.exports = async function (context, req) {
     } catch (err) {
         context.log('Error retrieving warden:', err);
         context.res = {
-            // 200 - internal error
+            // 500 - internal error
             status: 500,
             body: {
                 success: false,
