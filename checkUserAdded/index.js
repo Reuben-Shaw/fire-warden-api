@@ -13,26 +13,40 @@ const dbConfig = {
 };
 
 module.exports = async function (context, req) {
+    const staff_number = req.query?.staff_number;
+
+    if (!staff_number) {
+        context.res = {
+            status: 400,
+            body: {
+                success: false,
+                message: 'Missing staff number'
+            }
+        };
+        return;
+    }
+
     try {
         await sql.connect(dbConfig);
 
-        const result = await sql.query`SELECT * FROM wardens`;
-
+        const result = await sql.query`
+        SELECT * FROM users WHERE warden_id = ${staff_number} OR health_id = ${staff_number}
+        `;
+        const available = result.recordset.length === 0;
         context.res = {
             status: 200,
             body: {
                 success: true,
-                message: 'Wardens fetched successfully',
-                data: result.recordset
+                available: available
             }
         };
     } catch (err) {
-        context.log('Error retrieving wardens:', err);
+        context.log('Error checking staff number:', err);
         context.res = {
             status: 500,
             body: {
                 success: false,
-                message: 'Error retrieving wardens'
+                message: 'Error checking staff number'
             }
         };
     }

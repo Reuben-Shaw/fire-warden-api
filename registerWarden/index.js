@@ -58,7 +58,7 @@ module.exports = async function (context, req) {
             }
         };
     } catch (err) {
-        context.error('Error registering warden:', err); 
+        context.log('Error registering warden:', err); 
         context.res = {
             status: 500,
             body: {

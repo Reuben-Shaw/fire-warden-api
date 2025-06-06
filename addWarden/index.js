@@ -13,15 +13,15 @@ const dbConfig = {
 };
 
 module.exports = async function (context, req) {
-    const { staff_number, first_name, last_name } = req.body || {};
+    const { staff_number } = req.body || {};
     context.log('Request body:', req.body);
 
-    if (!staff_number || !first_name || !last_name) {
+    if (!staff_number) {
         context.res = {
             status: 400,
             body: {
                 success: false,
-                message: 'Missing required values',
+                message: 'Missing staff number',
             }
         };
         
@@ -32,8 +32,8 @@ module.exports = async function (context, req) {
         await sql.connect(dbConfig);
 
         await sql.query`
-            INSERT INTO wardens (staff_number, first_name, last_name)
-            VALUES (${staff_number}, ${first_name}, ${last_name})
+            INSERT INTO wardens (staff_number)
+            VALUES (${staff_number})
         `;
 
         context.res = {
@@ -44,7 +44,7 @@ module.exports = async function (context, req) {
             }
         };
     } catch (err) {
-        context.error('Error adding warden:', err); 
+        context.log('Error adding warden:', err); 
         context.res = {
             status: 500,
             body: {

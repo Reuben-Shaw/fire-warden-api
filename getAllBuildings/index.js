@@ -29,7 +29,7 @@ module.exports = async function (context, req) {
             }
         };
     } catch (err) {
-        context.error('Error retrieving buildings:', err);
+        context.log('Error retrieving buildings:', err);
         context.res = {
             status: 500,
             body: {

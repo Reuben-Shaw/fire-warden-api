@@ -8,51 +8,49 @@ const dbConfig = {
     database: process.env.DB_NAME,
     options: {
         encrypt: true,
-        trustServerCertificate: true 
+        trustServerCertificate: true
     }
 };
 
 module.exports = async function (context, req) {
-    const { entry_id, building_id, entry_datetime, exit_datetime } = req.body || {};
-    context.log('Request body:', req.body);
+    const staff_number = req.query?.staff_number;
 
-    if (!entry_id || !building_id || !entry_datetime) {
+    if (!staff_number) {
         context.res = {
             status: 400,
             body: {
                 success: false,
-                message: 'Missing required values',
+                message: 'Missing staff number'
             }
         };
-        
         return;
     }
 
     try {
         await sql.connect(dbConfig);
 
-        await sql.query`
-            UPDATE entries
-            SET building_id = ${building_id},
-                entry_datetime = ${entry_datetime},
-                exit_datetime = ${exit_datetime || null}
-            WHERE id = ${entry_id}
+        const wardenResult = await sql.query`
+        SELECT * FROM wardens WHERE staff_number = ${staff_number}
+        `;
+        const healthResult = await sql.query`
+        SELECT * FROM health_team WHERE id = ${staff_number}
         `;
 
+        const available = wardenResult.recordset.length === 0 && healthResult.recordset.length === 0;
         context.res = {
             status: 200,
             body: {
                 success: true,
-                message: 'Successfully updated the entry',
+                available: available
             }
         };
     } catch (err) {
-        context.log('Error updating entry:', err); 
+        context.log('Error checking staff number:', err);
         context.res = {
             status: 500,
             body: {
                 success: false,
-                message: 'Error updating entry',
+                message: 'Error checking staff number'
             }
         };
     }

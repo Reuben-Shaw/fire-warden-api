@@ -80,7 +80,7 @@ module.exports = async function (context, req) {
             }
         };
     } catch (err) {
-        context.error('Error logging in:', err);
+        context.log('Error logging in:', err);
         context.res = {
             status: 500,
             body: {

@@ -53,7 +53,7 @@ module.exports = async function (context, req) {
             }
         };
     } catch (err) {
-        context.log.error('Error retrieving entries:', err);
+        context.log('Error retrieving entries:', err);
         context.res = {
             status: 500,
             body: {

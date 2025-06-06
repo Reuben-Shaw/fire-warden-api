@@ -48,7 +48,7 @@ module.exports = async function (context, req) {
             }
         };
     } catch (err) {
-        context.error('Error adding entry:', err); 
+        context.log('Error adding entry:', err); 
         context.res = {
             status: 500,
             body: {

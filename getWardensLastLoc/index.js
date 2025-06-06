@@ -45,7 +45,7 @@ module.exports = async function (context) {
             }
         };
     } catch (err) {
-        context.log.error('Error retrieving warden entries:', err);
+        context.log('Error retrieving warden entries:', err);
         context.res = {
             status: 500,
             body: {

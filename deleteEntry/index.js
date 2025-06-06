@@ -53,7 +53,7 @@ module.exports = async function (context, req) {
             }
         };
     } catch (err) {
-        context.log.error('Error deleting entry:', err);
+        context.log('Error deleting entry:', err);
         context.res = {
             status: 500,
             body: {

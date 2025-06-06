@@ -42,7 +42,7 @@ module.exports = async function (context, req) {
             }
         };
     } catch (err) {
-        context.error('Error updating entry:', err); 
+        context.log('Error updating entry:', err); 
         context.res = {
             status: 500,
             body: {

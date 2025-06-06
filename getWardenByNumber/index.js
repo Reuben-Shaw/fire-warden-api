@@ -30,11 +30,13 @@ module.exports = async function (context, req) {
     try {
         await sql.connect(dbConfig);
 
+        // Passed data using parameterisation, to prevent injection
         const result = await sql.query`
         SELECT * FROM wardens WHERE staff_number = ${staff_number}
         `;
 
         if (result.recordset.length === 0) {
+            // 404 - missing content
             context.res = {
                 status: 404,
                 body: {
@@ -44,6 +46,7 @@ module.exports = async function (context, req) {
             };
         } else {
             context.res = {
+                // 200 - success
                 status: 200,
                 body: {
                     success: true,
@@ -53,8 +56,9 @@ module.exports = async function (context, req) {
             };
         }
     } catch (err) {
-        context.error('Error retrieving warden:', err);
+        context.log('Error retrieving warden:', err);
         context.res = {
+            // 200 - internal error
             status: 500,
             body: {
                 success: false,
